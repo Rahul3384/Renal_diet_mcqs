@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Renal Diet Quiz Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0fdf4;
+      color: #1f2937;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      color: #047857;
+      animation: slideDown 1s ease-out;
+    }
+    .quiz-container {
+      max-width: 500px;
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      animation: fadeIn 1s ease-in;
+    }
+    .question {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    .answers button {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #e0f2f1;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .answers button:hover {
+      background: #a7f3d0;
+      transform: scale(1.03);
+    }
+    .correct {
+      background-color: #bbf7d0 !important;
+      animation: correctFlash 0.5s;
+    }
+    .wrong {
+      background-color: #fecaca !important;
+      animation: shake 0.5s;
+    }
+    .score {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+    @keyframes correctFlash {
+      0%, 100% { background-color: #bbf7d0; }
+      50% { background-color: #6ee7b7; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Renal Diet Quiz</h1>
+  <div class="quiz-container">
+    <div id="question-container" class="question">Loading...</div>
+    <div id="answer-buttons" class="answers"></div>
+    <div id="score" class="score"></div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "Which of these foods is safe for a renal diet?",
+        answers: ["Tapioca", "Banana chips", "Pickled mango", "Beef curry"],
+        correct: 0
+      },
+      {
+        question: "Which food should be avoided due to high potassium?",
+        answers: ["Cucumber", "Tender coconut", "Snake gourd", "White rice"],
+        correct: 1
+      },
+      {
+        question: "Best breakfast item for a renal patient?",
+        answers: ["Upma with less salt", "Pazham pori", "Beef stew", "Avial with raw banana"],
+        correct: 0
+      },
+      {
+        question: "Why should processed foods be avoided?",
+        answers: ["High sugar", "High phosphorus", "Too spicy", "Low protein"],
+        correct: 1
+      },
+      {
+        question: "Which drink is safest for renal diet?",
+        answers: ["Lemon juice", "Orange juice", "Tender coconut water", "Grape juice"],
+        correct: 0
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    const questionContainer = document.getElementById("question-container");
+    const answerButtons = document.getElementById("answer-buttons");
+    const scoreDisplay = document.getElementById("score");
+
+    function showQuestion() {
+      const q = questions[currentQuestion];
+      questionContainer.textContent = q.question;
+      answerButtons.innerHTML = "";
+      q.answers.forEach((answer, index) => {
+        const button = document.createElement("button");
+        button.textContent = answer;
+        button.onclick = () => selectAnswer(index);
+        answerButtons.appendChild(button);
+      });
+    }
+
+    function selectAnswer(index) {
+      const buttons = answerButtons.querySelectorAll("button");
+      buttons.forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === questions[currentQuestion].correct) {
+          btn.classList.add("correct");
+        }
+        if (i === index && i !== questions[currentQuestion].correct) {
+          btn.classList.add("wrong");
+        }
+      });
+
+      if (index === questions[currentQuestion].correct) {
+        score++;
+      }
+
+      scoreDisplay.textContent = `Score: ${score}/${questions.length}`;
+
+      setTimeout(() => {
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+          showQuestion();
+        } else {
+          questionContainer.textContent = "Quiz Complete!";
+          answerButtons.innerHTML = "";
+        }
+      }, 1500);
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
